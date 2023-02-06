@@ -8,7 +8,7 @@ export const Typography = ({
 }: {
     color?: string;
     fontSize: number;
-    children: JSX.Element | string;
+    children: React.ReactNode | string;
 }) => {
     return (
         <Text

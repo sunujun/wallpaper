@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { Typography } from './Typography';
 
-export const Badge = ({ children, fontSize }: { children: JSX.Element; fontSize: number }) => {
+export const Badge = ({ children, fontSize }: { children: React.ReactNode; fontSize: number }) => {
     return (
         <View>
             {children}

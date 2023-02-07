@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, useWindowDimensions, View } from 'react-native';
+import { ActivityIndicator, PermissionsAndroid, Platform, useWindowDimensions, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import * as FileSystem from 'react-native-fs';
 import { Header } from '../components/Header/Header';
 import { RemoteImage } from '../components/RemoteImage';
@@ -19,6 +20,18 @@ export const ImageDetail = () => {
     }, [navigation]);
 
     const onPressDownload = useCallback(async () => {
+        async function hasAndroidPermission() {
+            const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+
+            const hasPermission = await PermissionsAndroid.check(permission);
+            if (hasPermission) {
+                return true;
+            }
+
+            const status = await PermissionsAndroid.request(permission);
+            return status === 'granted';
+        }
+
         setDownloading(true);
         const downloadDest = `${FileSystem.DocumentDirectoryPath}/${new Date().getMilliseconds()}.jpg`;
         const { promise } = FileSystem.downloadFile({
@@ -29,7 +42,15 @@ export const ImageDetail = () => {
         try {
             const { statusCode } = await promise;
             console.log('Finished Downloading', statusCode);
-        } catch (_) {}
+            if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
+                setDownloading(false);
+                return;
+            }
+            const result = await CameraRoll.save(downloadDest);
+            console.log('result', result);
+        } catch (e) {
+            console.log('save failed', e);
+        }
 
         setDownloading(false);
     }, [route.params.url]);

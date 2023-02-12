@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, PermissionsAndroid, Platform, useWindowDimensions, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import * as FileSystem from 'react-native-fs';
 import { Header } from '../components/Header/Header';
@@ -8,12 +9,18 @@ import { RemoteImage } from '../components/RemoteImage';
 import { Button } from '../components/Button';
 import { Typography } from '../components/Typography';
 import { Icon } from '../components/Icon';
+import { onClickFavorite } from '../actions/favorite';
 
 export const ImageDetail = () => {
     const { width } = useWindowDimensions();
     const route = useRoute();
     const navigation = useNavigation();
     const [downloading, setDownloading] = useState(false);
+    const dispatch = useDispatch();
+
+    const onPressFavorite = useCallback(() => {
+        dispatch(onClickFavorite(route.params.url));
+    }, [dispatch, route.params.url]);
 
     const onPressBack = useCallback(() => {
         navigation.goBack();
@@ -55,13 +62,18 @@ export const ImageDetail = () => {
         setDownloading(false);
     }, [route.params.url]);
 
+    const isFavorite = useSelector(state => {
+        return state.favorite.favoriteList.filter(item => item === route.params.url).length > 0;
+    });
+
     return (
         <View style={{ flex: 1 }}>
             <Header>
                 <Header.Group>
-                    <Header.Button iconName={'arrow-back'} onPress={onPressBack} />
+                    <Header.Button iconName="arrow-back" onPress={onPressBack} />
                     <Header.Title title="IMAGE DETAIL" />
                 </Header.Group>
+                <Header.Button iconName={isFavorite ? 'heart' : 'heart-outline'} onPress={onPressFavorite} />
             </Header>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <RemoteImage url={route.params.url} width={width} height={width * 1.5} />
@@ -86,7 +98,7 @@ export const ImageDetail = () => {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                             }}>
-                            <Typography color={'white'}>DOWNLOAD</Typography>
+                            <Typography color="white">DOWNLOAD</Typography>
                             <Icon name="download" size={24} color="white" />
                         </View>
                     )}

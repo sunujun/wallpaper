@@ -10,10 +10,11 @@ import { Button } from '../components/Button';
 import { Typography } from '../components/Typography';
 import { Icon } from '../components/Icon';
 import { onClickFavorite } from '../actions/favorite';
+import { ImageDetailScreenRouteProp } from '../navigation/type';
 
 export const ImageDetail = () => {
     const { width } = useWindowDimensions();
-    const route = useRoute();
+    const route = useRoute<ImageDetailScreenRouteProp>();
     const navigation = useNavigation();
     const [downloading, setDownloading] = useState(false);
     const dispatch = useDispatch();

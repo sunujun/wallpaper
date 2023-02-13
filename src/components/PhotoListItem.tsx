@@ -3,10 +3,11 @@ import { Animated, useWindowDimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Button } from './Button';
 import { RemoteImage } from './RemoteImage';
+import { BottomTabScreenNavigationProp } from '../navigation/type';
 
 export const PhotoListItem = ({ url }: { url: string }) => {
     const { width } = useWindowDimensions();
-    const navigation = useNavigation();
+    const navigation = useNavigation<BottomTabScreenNavigationProp>();
     const scaleAnimatedValue = useRef(new Animated.Value(0)).current;
 
     const onPressItem = useCallback(() => {

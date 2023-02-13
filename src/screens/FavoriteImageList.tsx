@@ -3,9 +3,10 @@ import { FlatList, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { Header } from '../components/Header/Header';
 import { PhotoListItem } from '../components/PhotoListItem';
+import { RootState } from '../store/store';
 
 export const FavoriteImageList = () => {
-    const imageList = useSelector(state => state.favorite.favoriteList);
+    const imageList = useSelector((state: RootState) => state.favorite.favoriteList);
 
     return (
         <View style={{ flex: 1 }}>
@@ -15,7 +16,7 @@ export const FavoriteImageList = () => {
             <FlatList
                 style={{ flex: 1 }}
                 data={imageList}
-                renderItem={item => {
+                renderItem={({ item }) => {
                     return <PhotoListItem url={item} />;
                 }}
             />

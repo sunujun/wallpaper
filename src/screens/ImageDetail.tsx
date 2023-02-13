@@ -11,6 +11,7 @@ import { Typography } from '../components/Typography';
 import { Icon } from '../components/Icon';
 import { onClickFavorite } from '../actions/favorite';
 import { ImageDetailScreenRouteProp } from '../navigation/type';
+import { RootState } from '../store/store';
 
 export const ImageDetail = () => {
     const { width } = useWindowDimensions();
@@ -63,7 +64,7 @@ export const ImageDetail = () => {
         setDownloading(false);
     }, [route.params.url]);
 
-    const isFavorite = useSelector(state => {
+    const isFavorite = useSelector((state: RootState) => {
         return state.favorite.favoriteList.filter(item => item === route.params.url).length > 0;
     });
 
